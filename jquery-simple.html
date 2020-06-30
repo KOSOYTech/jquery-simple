@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      	<style>
+          body {min-width: 100vw; min-height: 100vh;}
+          #benjamin {display: block; font-family: Arial; width: 150px; margin-top: 20px; margin-left: auto; margin-right: auto; font-size: 25px; background-color: black; color: white; border: 3px solid red; cursor: pointer;}
+          #wallchangerbox {display: block; width: 150px; margin-left: auto; margin-right: auto; margin-top: 15px;}
+          .ui-selectmenu-menu .ui-menu.customicons .ui-menu-item-wrapper {padding: 0.5em 0 0.5em 3em;}
+		  .ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icon {height: 24px; width: 24px; top: 0.1em;}
+          .ui-icon.whitew {background: url("simple-img/whitewall.jpg") 0 0 no-repeat;}
+          .ui-icon.blackw { background: url("simple-img/blackwall.jpg") 0 0 no-repeat;}
+          .ui-icon.redw {background: url("simple-img/redwall.jpg") 0 0 no-repeat;}
+        </style>
+	</head>
+	<body>
+      
+        <!-- Наша кнопочка -->
+    	<button id="benjamin">Кнопочка</button>
+      
+        <!-- Наш select для выбора фона -->
+		<fieldset id="wallchangerbox">
+        	<select id="wallchanger">
+          		<option value="whitewall" data-class="whitew">Белый</option>
+           	 	<option value="blackwall" data-class="blackw">Черный</option>
+            	<option value="redwall" data-class="redw">Красный</option>
+        	</select>
+        </fieldset>
+
+      
+        <script>
+			$(document).ready(function() {
+                
+                // 1.
+                // Скрипт для вывода сообщения для дебага в консоль
+				$("#benjamin").click(function(){
+					console.log("Кнопочка нажата!");
+    			}); 
+
+                // 2.
+                // Скрипт, меняющий цвет фона при нажатии на body
+                $('body').click(function(event) {
+                  
+          
+                // Прописываем, чтобы скрипт не срабатывал при нажатии на select, чтобы он не мешал работе 3-его скрипта
+  				if (!$(event.target).closest('#wallchangerbox').length && !$(event.target).closest('.ui-selectmenu-menu').length) {
+                  
+                    // Генерируем случайное значение для каждого пункта RGB
+					var colorRed = Math.random() * 255;
+                  	var colorGreen = Math.random() * 255;
+                  	var colorBlue = Math.random() * 255;
+                    var color = `rgb(${colorRed},${colorGreen},${colorBlue})`;
+                    $(this).css( "background", color );
+                 
+                }
+               
+    			}); 
+                
+
+                // 3.
+                // Скрипт, меняющий изображение фона при нажатии на пункты select
+              
+                // При помощи jQuery UI делаем возможным использование изображенией внутри select
+                $( function() {
+    				$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+      					_renderItem: function( ul, item ) {
+        				var li = $( "<li>" ),
+         				wrapper = $( "<div>", { text: item.label } );
+ 						if ( item.disabled ) {
+          					li.addClass( "ui-state-disabled" );
+       					}
+                        $( "<span>", {
+          					style: item.element.attr( "data-style" ),
+                            "class": "ui-icon " + item.element.attr( "data-class" )
+       					})
+          				.appendTo( wrapper );
+       			 		return li.append( wrapper ).appendTo( ul );
+      			 	}
+				 });
+                  
+                 $( "#wallchanger" )
+      				.iconselectmenu()
+     				.iconselectmenu( "menuWidget" )
+        			.addClass( "ui-menu-icons customicons" );
+                 });
+              
+                // Меняем фон сайта в зависимости от выбранной картинки
+                $(document).on("click",".ui-menu-item-wrapper", function() {
+    				var id = $(this).attr('id');
+                    switch (id) {
+                      case "ui-id-1":
+                      	$('body').css( "background", "url(\"simple-img/whitewall.jpg\")" );
+                      	break;
+                      case "ui-id-2":
+                      	$('body').css( "background", "url(\"simple-img/blackwall.jpg\")" );
+                        break;
+                      case "ui-id-3":
+                      	$('body').css( "background", "url(\"simple-img/redwall.jpg\")" );
+                        break;
+                      default:
+						alert( "Выбран несуществующий фон" );
+					}
+				}); 
+              
+			});
+        </script>
+       
+	</body>
+</html>
